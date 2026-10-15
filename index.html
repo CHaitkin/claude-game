@@ -41,12 +41,65 @@
   #shields { margin-top:10px; display:flex; gap:10px; justify-content:center; }
   #shields b { width:9px; height:9px; transform:rotate(45deg); background:#fff; box-shadow:0 0 8px rgba(255,255,255,.7); }
   #shields b.off { background:transparent; border:1px solid rgba(255,255,255,.3); box-shadow:none; }
+  .bRow { display:flex; justify-content:space-between; margin-top:8px; font-weight:700; font-size:9px; letter-spacing:.3em; color:var(--dim); }
+  .bRow + #gap { margin-top:4px; }
+  /* what to do right now in a Hunter fight */
+  #bHint { margin-top:12px; font-weight:800; font-size:12px; letter-spacing:.2em; white-space:nowrap; text-shadow:0 0 12px rgba(0,0,0,.9); }
+  #bHint .key { margin:0 4px; vertical-align:1px; }
+  #bHint.warn { color:#ff5a46; }
+  #bHint.go { color:var(--gold); }
+  #bHint.pulse { animation:hintPulse .5s ease-in-out infinite alternate; }
+  @keyframes hintPulse { from { opacity:1; } to { opacity:.45; } }
+  /* which way to steer for the Hunter's core */
+  .coreArrow { position:fixed; top:52%; transform:translateY(-50%); font-weight:900; font-size:clamp(36px, 6vw, 64px); letter-spacing:-.1em;
+    color:var(--gold); text-shadow:0 0 18px rgba(255,190,40,.7); pointer-events:none; }
+  #arrowL { left:4vw; animation:nudgeL .6s ease-in-out infinite alternate; }
+  #arrowR { right:4vw; animation:nudgeR .6s ease-in-out infinite alternate; }
+  @keyframes nudgeL { to { transform:translate(-14px, -50%); } }
+  @keyframes nudgeR { to { transform:translate(14px, -50%); } }
+  #oMenu .item { cursor:pointer; }
 
   /* controls shown for the first seconds of every run */
   #ctrl { position:fixed; left:50%; bottom:18px; transform:translateX(-50%); width:min(420px, 88vw); pointer-events:none; transition:opacity 1s; }
   #ctrl .row { padding:3px 18px; font-size:12px;
     background:linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,.5) 14%, rgba(0,0,0,.5) 86%, rgba(0,0,0,0)); }
   #ctrl .row .keys { font-size:10px; }
+  /* one-off tip at the top, styled like the controls panel */
+  #tip { position:fixed; left:50%; top:84px; transform:translateX(-50%); width:min(360px, 80vw); pointer-events:none; transition:opacity .4s; }
+  #tip.low { top:178px; }
+  #tip .row { padding:4px 18px; font-size:13px; }
+  #tip .row .keys { font-size:11px; }
+  #tMenu .item, #controls .back { cursor:pointer; }
+  /* full controls screen from the main menu */
+  #controls .panel { margin-top:0; }
+  #controls .row { padding:7px 22px; }
+  #controls .back { margin-top:30px; }
+  #pMenu .item, #wMenu .item { cursor:pointer; }
+
+  /* victory screen: the run's light show plays behind it */
+  #win { background:radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 30%, rgba(0,0,0,.6) 90%); }
+  .winKick { font-weight:800; font-size:clamp(11px, 1.5vw, 14px); letter-spacing:.6em; padding-left:.6em; color:var(--gold);
+    text-shadow:0 0 14px rgba(255,190,40,.6); opacity:0; animation:fadeUp .6s .2s ease-out forwards; }
+  /* Only opacity, transform and filter animate here: animating big text-shadows repaints the whole
+     title every frame and halved the frame rate. The pulsing glow is a copy of the text on its own layer. */
+  .winTitle { position:relative; font-weight:900; font-size:clamp(40px, 8.5vw, 112px); line-height:1.05; margin-top:10px; color:#fff;
+    letter-spacing:.18em; padding-left:.18em; text-shadow:0 0 22px rgba(255,255,255,.5), 0 0 60px rgba(255,120,60,.45);
+    will-change:transform, opacity, filter; animation:winIn 1.3s cubic-bezier(.16,1,.3,1) both; }
+  .winTitle::after { content:attr(data-text); position:absolute; inset:0; padding-left:.18em; color:transparent; pointer-events:none;
+    text-shadow:0 0 34px rgba(255,255,255,.8), 0 0 90px rgba(255,190,80,.7), 0 0 160px rgba(255,60,20,.6);
+    opacity:0; will-change:opacity; animation:winGlow 1.6s 1.3s ease-in-out infinite alternate; }
+  @keyframes winIn { 0% { opacity:0; transform:scale(1.35); filter:blur(14px); } 100% { opacity:1; transform:none; filter:blur(0); } }
+  @keyframes winGlow { from { opacity:0; } to { opacity:.85; } }
+  .winRule { height:2px; width:0; margin:18px auto 0; background:linear-gradient(90deg, transparent, var(--gold), #fff, var(--gold), transparent);
+    box-shadow:0 0 14px var(--gold); animation:ruleOut .9s .6s cubic-bezier(.16,1,.3,1) forwards; }
+  @keyframes ruleOut { to { width:min(70vw, 640px); } }
+  .winStats { margin-top:26px; }
+  .winStats .row { opacity:0; animation:fadeUp .45s ease-out forwards; }
+  .winStats .row:nth-child(1) { animation-delay:.9s; } .winStats .row:nth-child(2) { animation-delay:1.0s; }
+  .winStats .row:nth-child(3) { animation-delay:1.1s; } .winStats .row:nth-child(4) { animation-delay:1.2s; }
+  .winStats .row:nth-child(5) { animation-delay:1.3s; } .winStats .row:nth-child(6) { animation-delay:1.4s; }
+  .winMenu { opacity:0; animation:fadeUp .5s 2.2s ease-out forwards; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
 
   /* zone / boss banner */
   #banner { position:fixed; top:22%; left:50%; transform:translate(-50%,-50%); text-align:center; pointer-events:none; opacity:0; white-space:nowrap; }
@@ -102,10 +155,14 @@
 </div>
 <div id="bossHud" class="hidden">
   <div id="bName"></div>
+  <div class="bRow"><span id="bL">GAP</span><span id="bR"></span></div>
   <div id="gap"><i></i></div>
   <div id="bTime"><i></i></div>
   <div id="shields"><b></b><b></b><b></b></div>
+  <div id="bHint"></div>
 </div>
+<div id="arrowL" class="coreArrow hidden">‹‹‹</div>
+<div id="arrowR" class="coreArrow hidden">›››</div>
 <div id="ctrl" style="opacity:0">
   <div class="row"><span>STEER</span><span class="keys">← → &nbsp;/&nbsp; A D</span></div>
   <div class="row"><span>JUMP</span><span class="keys">↑ &nbsp;/&nbsp; W &nbsp;/&nbsp; SPACE</span></div>
@@ -114,14 +171,33 @@
   <div class="row"><span>PAUSE</span><span class="keys">P &nbsp;/&nbsp; ESC</span></div>
   <div class="row"><span>QUICK RESTART</span><span class="keys">R</span></div>
 </div>
+<div id="tip" style="opacity:0">
+  <div class="row hl"><span>JUMP</span><span class="keys">↑ &nbsp;/&nbsp; W &nbsp;/&nbsp; SPACE</span></div>
+</div>
 <div id="banner"></div>
 
 <div id="title" class="screen">
   <div class="title-word">REDLINE</div>
   <div class="menu">
-    <div class="item active">PRESS ENTER</div>
+    <div id="tMenu"></div>
     <div class="best" id="tBest"></div>
   </div>
+</div>
+
+<div id="controls" class="screen hidden">
+  <div class="panel">
+    <div class="h1">CONTROLS</div>
+    <div class="h2" style="color:var(--dim)">KEYBOARD</div>
+    <div style="height:22px"></div>
+    <div class="row hl"><span>STEER</span><span class="keys">← → &nbsp;/&nbsp; A D</span></div>
+    <div class="row"><span>JUMP</span><span class="keys">↑ &nbsp;/&nbsp; W &nbsp;/&nbsp; SPACE</span></div>
+    <div class="row"><span>SLAM</span><span class="keys">↓ &nbsp;/&nbsp; S</span></div>
+    <div class="row"><span>BOOST</span><span class="keys">HOLD SHIFT</span></div>
+    <div class="row"><span>PAUSE</span><span class="keys">P &nbsp;/&nbsp; ESC</span></div>
+    <div class="row"><span>QUICK RESTART</span><span class="keys">R</span></div>
+    <div class="row"><span>MUTE</span><span class="keys">M</span></div>
+  </div>
+  <div class="item active back">RETURN</div>
 </div>
 
 <div id="over" class="screen hidden">
@@ -135,17 +211,36 @@
     <div class="row"><span>BEST</span><span class="val" id="oBest">0</span></div>
   </div>
   <div class="menu">
-    <div class="item active">RETRY</div>
-    <div class="best">PRESS ENTER</div>
+    <div id="oMenu"></div>
+    <div class="best" id="oMenuHint"></div>
   </div>
 </div>
 
 <div id="pause" class="screen hidden">
   <div class="h1">PAUSED</div>
-  <div class="h2">PROGRESS IS LOST ON RESTART</div>
+  <div class="h2">RESTART OR MAIN MENU ENDS THIS RUN</div>
   <div class="menu">
-    <div class="item active">RESUME</div>
-    <div class="item">RESTART</div>
+    <div id="pMenu"></div>
+    <div class="best">↑ ↓ SELECT &nbsp;&nbsp; ENTER CONFIRM</div>
+  </div>
+</div>
+
+<div id="win" class="screen hidden">
+  <div class="winKick" id="wKick">BOTH HUNTERS DESTROYED</div>
+  <div class="winTitle" id="wTitle">LAP 01 CLEARED</div>
+  <div class="winRule"></div>
+  <div class="h2" id="wSub"></div>
+  <div class="panel winStats">
+    <div class="row" id="wScoreRow"><span>SCORE</span><span class="val" id="wScore">0</span></div>
+    <div class="row"><span>TIME</span><span class="val" id="wTime">0:00</span></div>
+    <div class="row"><span>DISTANCE</span><span class="val" id="wDist">0</span></div>
+    <div class="row"><span>RINGS</span><span class="val" id="wRings">0</span></div>
+    <div class="row"><span>HUNTERS DESTROYED</span><span class="val" id="wKills">0</span></div>
+    <div class="row"><span>BEST</span><span class="val" id="wBest">0</span></div>
+  </div>
+  <div class="menu winMenu">
+    <div id="wMenu"></div>
+    <div class="best">↑ ↓ SELECT &nbsp;&nbsp; ENTER CONFIRM</div>
   </div>
 </div>
 
@@ -202,7 +297,7 @@ const WHITE = new THREE.Color(1, 1, 1), RED = new THREE.Color(1, 0.08, 0.03);
 
 // Run structure: two zones, a Hunter, two zones, a Hunter, then loop harder.
 const STAGES = [{ zone: 0 }, { zone: 1 }, { boss: 0 }, { zone: 2 }, { zone: 3 }, { boss: 1 }];
-const BOSS_NAMES = ['THE MAW', 'THE GRINDER'];
+const BOSS_NAMES = ['THE GRINDER', 'THE MAW'];
 
 // ---------- renderer / scene ----------
 const renderer = new THREE.WebGLRenderer({ canvas: $('c'), antialias: false, powerPreference: 'high-performance' });
@@ -543,6 +638,7 @@ const HM = {
   dark: new THREE.MeshStandardMaterial({ color: 0x120c0c, metalness: 0.85, roughness: 0.35, side: THREE.DoubleSide }),
   glow: new THREE.MeshBasicMaterial({ color: new THREE.Color(3.2, 0.22, 0.08) }),
   core: new THREE.MeshBasicMaterial({ color: new THREE.Color(3.5, 2.6, 1.2) }),
+  target: new THREE.MeshBasicMaterial({ color: new THREE.Color(2.6, 1.6, 0.3), side: THREE.DoubleSide, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }),
   black: new THREE.MeshBasicMaterial({ color: 0x000000 }),
 };
 const alongZ = geo => geo.rotateX(Math.PI / 2);
@@ -558,30 +654,39 @@ function hunterRig() {
 // Armored, segmented body trailing behind the head, ending in a tail plate with the core in its floor lane.
 function hunterBody(m) {
   for (let i = 0; i < 5; i++) {
-    const r = 4.25 + i * 0.1, z = 2.1 + i * 2.6;
+    const r = 4.1 + i * 0.07, z = 2.1 + i * 2.6;
     const seg = new THREE.Mesh(alongZ(new THREE.CylinderGeometry(r, r, 2.2, 20)), HM.chrome);
     seg.position.z = z; m.add(seg);
     const seam = new THREE.Mesh(new THREE.TorusGeometry(r - 0.05, 0.1, 6, 48), HM.glow);
     seam.position.z = z + 1.3; m.add(seam);
   }
   const tailZ = 2.1 + 4 * 2.6 + 1.1;
-  const plate = new THREE.Mesh(new THREE.CircleGeometry(4.7, 40), HM.dark);
+  const plate = new THREE.Mesh(new THREE.CircleGeometry(4.45, 40), HM.dark);
   plate.position.z = tailZ + 0.02; m.add(plate);
   for (let k = 0; k < 8; k++) {
     const a = (k + 0.5) * STEP;
     const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.08, 2.6, 0.05), HM.glow);
     spoke.position.set(Math.sin(a) * 2.9, -Math.cos(a) * 2.9, tailZ + 0.05); spoke.rotation.z = a; m.add(spoke);
   }
-  const rim = new THREE.Mesh(new THREE.TorusGeometry(4.68, 0.12, 6, 64), HM.glow);
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(4.42, 0.1, 6, 64), HM.glow);
   rim.position.z = tailZ + 0.05; m.add(rim);
   const core = new THREE.Group();
-  core.position.set(0, -3.7, tailZ + 0.5);
+  core.position.set(0, -3.35, tailZ + 0.5);
   core.add(new THREE.Mesh(new THREE.OctahedronGeometry(0.7), HM.core));
   const coreRing = new THREE.Mesh(new THREE.TorusGeometry(1.05, 0.07, 4, 6), HM.core);
   core.add(coreRing);
   core.add(new THREE.Mesh(new THREE.PlaneGeometry(4.5, 4.5), new THREE.MeshBasicMaterial({ map: glowTex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, color: new THREE.Color(1.6, 1.0, 0.4) })));
+  // target reticle, shown only while the core is exposed
+  const reticle = new THREE.Group();
+  reticle.add(new THREE.Mesh(new THREE.RingGeometry(1.1, 1.22, 6), HM.target));
+  for (let k = 0; k < 3; k++) {
+    const tick = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.4), HM.target);
+    const a = k / 3 * TAU;
+    tick.position.set(Math.sin(a) * 1.42, Math.cos(a) * 1.42, 0); tick.rotation.z = -a; reticle.add(tick);
+  }
+  reticle.position.z = 0.1; reticle.visible = false; core.add(reticle);
   m.add(core);
-  return { tailZ, core, coreRing };
+  return { tailZ, core, coreRing, reticle };
 }
 function finishHunter(h) {
   h.model.children.forEach(c => { c.userData.p0 = c.position.clone(); c.userData.q0 = c.quaternion.clone(); c.userData.s0 = c.scale.clone(); });
@@ -592,14 +697,14 @@ function finishHunter(h) {
 function buildMaw() {
   const h = hunterRig(), m = h.model;
   Object.assign(h, hunterBody(m));
-  const throat = new THREE.Mesh(alongZ(new THREE.CylinderGeometry(2.0, 4.4, 3.2, 20, 1, true)), HM.dark);
+  const throat = new THREE.Mesh(alongZ(new THREE.CylinderGeometry(2.0, 4.15, 3.2, 20, 1, true)), HM.dark);
   throat.position.z = 1.6; m.add(throat);
   for (const [z, r] of [[0.8, 3.75], [1.9, 3.0]]) {
     const rib = new THREE.Mesh(new THREE.TorusGeometry(r, 0.07, 6, 40), HM.glow); rib.position.z = z; m.add(rib);
   }
   const eye = new THREE.Mesh(new THREE.SphereGeometry(1.1, 24, 16), HM.glow); eye.position.z = 3.1; m.add(eye);
   const pupil = new THREE.Mesh(new THREE.BoxGeometry(0.24, 1.7, 0.1), HM.black); pupil.position.z = 1.98; m.add(pupil);
-  m.add(new THREE.Mesh(new THREE.TorusGeometry(4.45, 0.32, 8, 48), HM.chrome));
+  m.add(new THREE.Mesh(new THREE.TorusGeometry(4.3, 0.26, 8, 48), HM.chrome));
   for (let i = 0; i < 18; i++) {
     const a = i / 18 * TAU;
     const t = new THREE.Mesh(toothGeo, HM.chrome);
@@ -626,7 +731,7 @@ function buildMaw() {
 function buildGrinder() {
   const h = hunterRig(), m = h.model;
   Object.assign(h, hunterBody(m));
-  m.add(new THREE.Mesh(new THREE.TorusGeometry(4.45, 0.38, 8, 56), HM.chrome));
+  m.add(new THREE.Mesh(new THREE.TorusGeometry(4.3, 0.3, 8, 56), HM.chrome));
   const lipGlow = new THREE.Mesh(new THREE.TorusGeometry(4.0, 0.08, 6, 56), HM.glow); lipGlow.position.z = -0.35; m.add(lipGlow);
   for (let i = 0; i < 28; i++) {
     const a = i / 28 * TAU;
@@ -653,7 +758,7 @@ function buildGrinder() {
   h.arms = arms;
   return finishHunter(h);
 }
-const hunters = [buildMaw(), buildGrinder()];
+const hunters = [buildGrinder(), buildMaw()];
 
 // lunge warning strip along one lane + the spike that follows
 const teleHalf = 0.34;
@@ -663,6 +768,38 @@ tele.visible = false; tele.frustumCulled = false; scene.add(tele);
 const spike = new THREE.Mesh(new THREE.ConeGeometry(0.45, 7, 6).rotateX(-Math.PI / 2), HM.chrome);
 spike.add(new THREE.Mesh(new THREE.ConeGeometry(0.2, 7.3, 6).rotateX(-Math.PI / 2).translate(0, 0.25, 0), HM.glow));
 spike.visible = false; spike.frustumCulled = false; scene.add(spike);
+
+// gold guide lane: chevrons on the floor pointing at the Hunter's exposed core
+const guideHalf = 0.36;
+const guideUniforms = { uBend: tunnelUniforms.uBend, uTime: { value: 0 }, uEnd: { value: -60 }, uAlpha: { value: 0 }, uColor: { value: new THREE.Color(1.5, 0.95, 0.18) } };
+const guide = new THREE.Mesh(
+  new THREE.CylinderGeometry(R - 0.025, R - 0.025, 70, 8, 40, true, -guideHalf, guideHalf * 2).rotateX(Math.PI / 2).translate(0, 0, -32),
+  new THREE.ShaderMaterial({
+    uniforms: guideUniforms, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+    vertexShader: /* glsl */`
+      uniform vec2 uBend;
+      varying vec2 vUv; varying float vZ;
+      void main() {
+        vUv = uv;
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        float q = wp.z < 0.0 ? wp.z * wp.z : 0.0;
+        wp.xy += uBend * q;
+        vZ = wp.z;
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }`,
+    fragmentShader: /* glsl */`
+      uniform float uTime, uEnd, uAlpha; uniform vec3 uColor;
+      varying vec2 vUv; varying float vZ;
+      void main() {
+        float x = abs(vUv.x - 0.5) * 2.0;                       // 0 at the lane centre, 1 at its edges
+        float edge = smoothstep(0.8, 0.94, x) * (1.0 - smoothstep(0.96, 1.0, x));
+        float c = fract(vZ * 0.22 - x * 0.7 + uTime * 2.5);      // chevrons pointing ahead, racing forward
+        float chev = smoothstep(0.0, 0.06, c) * (1.0 - smoothstep(0.3, 0.38, c)) * (1.0 - x * 0.5);
+        float fade = smoothstep(uEnd, uEnd + 6.0, vZ) * (1.0 - smoothstep(-6.0, 2.0, vZ) * 0.75);
+        gl_FragColor = vec4(uColor * (edge * 0.9 + chev * 0.6) * fade * uAlpha, 1.0);
+      }`,
+  }));
+guide.visible = false; guide.frustumCulled = false; scene.add(guide);
 
 // ---------- post-processing ----------
 const composer = new EffectComposer(renderer);
@@ -706,10 +843,15 @@ const fx = new ShaderPass({
 composer.addPass(fx);
 composer.addPass(new OutputPass());
 
-addEventListener('resize', () => {
+function fitToWindow() {
   camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); composer.setPixelRatio(renderer.getPixelRatio());
   renderer.setSize(innerWidth, innerHeight); composer.setSize(innerWidth, innerHeight);
-});
+}
+addEventListener('resize', () => { if (!rec.active) fitToWindow(); });   // a recording keeps its own fixed size
+const rec = { active: false, t: 0 };
+let autopilot = false, apBoost = false, apCooldown = 0;
+const apStats = { rings: 0, jumps: 0, clips: 0, zones: 0, boostTime: 0 };
 
 // ---------- audio: heavy procedural drums, distorted bass, drones ----------
 const mtof = n => 440 * Math.pow(2, (n - 69) / 12);
@@ -925,6 +1067,22 @@ const AudioSys = {
     this.noise(t, 1.0, this.kickDrive, 0.8, 'lowpass', 3500, 70); this.osc('sine', 130, t, 0.8, this.kickDrive, 0.9, 28);
   },
   sfxUi() { if (!this.ctx) return; this.osc('sine', mtof(64), this.now(), 0.2, this.sfx, 0.12); },
+  // lap cleared: a boom, a rising bell arpeggio and a swelling E major chord, the music's only bright moment
+  sfxVictory() {
+    if (!this.ctx) return; const t = this.now();
+    this.osc('sine', 70, t, 2.4, this.sfx, 0.9, 28); this.noise(t, 2.0, this.sfx, 0.4, 'lowpass', 7000, 80);
+    [64, 68, 71, 76, 80, 83, 88].forEach((n, i) => {
+      this.osc('sine', mtof(n), t + 0.15 + i * 0.09, 0.9, this.sfx, 0.12);
+      this.osc('sine', mtof(n) * 2.76, t + 0.15 + i * 0.09, 0.4, this.sfx, 0.03);
+    });
+    const fl = this.ctx.createBiquadFilter(), g = this.ctx.createGain();
+    fl.type = 'lowpass'; fl.frequency.setValueAtTime(400, t); fl.frequency.exponentialRampToValueAtTime(4200, t + 1.6);
+    this.env(g, t, 0.08, 3.8, 0.6); fl.connect(g); g.connect(this.sfx); g.connect(this.delay);
+    for (const [n, det] of [[52, -8], [56, 6], [59, -4], [64, 8], [40, 0]]) {
+      const o = this.ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = mtof(n); o.detune.value = det;
+      o.connect(fl); o.start(t); o.stop(t + 3.9);
+    }
+  },
 };
 
 // ---------- game state ----------
@@ -937,9 +1095,15 @@ let spawnTimer = 0, lastPattern = null;
 let timeScale = 1, slowmo = 0, shake = 0, flash = 0, crashT = 0, overAt = 0, nearCooldown = 0, kick = 0;
 let boostHeld = false, boosting = false, boostE = 1, boostAmt = 0, speedDip = 0, invuln = 0;
 let stageIdx = 0, stageT = 0, zone = 0, zoneCount = 0, titleZoneT = 0, attractT = 0, ctrlT = 0;
-let boss = null, deathCause = 'crash';
-let best = 0;
-try { best = +localStorage.getItem('redline-best') || 0; } catch (e) {}
+let boss = null, deathCause = 'crash', checkpoint = null, overOpts = [], overSel = 0;
+let titleSel = 0, controlsOpen = false, jumpTipDone = false, tipT = 0, flare = 0, bendScale = 1;
+let pauseSel = 0, winSel = 0, winOpts = [], winT = 0, winPalT = 0, winFxT = 0, winLap = 1;
+// Progress lives in localStorage as readable JSON, so playtest hosts (Betacade) can chart how far players get.
+let save = { runs: 0, best: 0, bestDistance: 0, furthestZone: 0, huntersDestroyed: 0, ringsCollected: 0, run: { zone: 0, distance: 0, score: 0 } };
+try { save = { ...save, ...JSON.parse(localStorage.getItem('save') ?? '{}') }; } catch (e) {}
+const writeSave = () => { try { localStorage.setItem('save', JSON.stringify(save)); } catch (e) {} };
+let best = save.best, saveT = 0;
+try { best = Math.max(best, +localStorage.getItem('redline-best') || 0); } catch (e) {}
 try { AudioSys.muted = localStorage.getItem('redline-muted') === '1'; } catch (e) {}
 
 const loopCount = () => Math.floor(stageIdx / STAGES.length);
@@ -953,6 +1117,7 @@ const ui = {
   bossHud: $('bossHud'), bName: $('bName'), gap: $('gap'), gapFill: $('gap').firstElementChild, bTime: $('bTime').firstElementChild, shields: $('shields'),
   ctrl: $('ctrl'), banner: $('banner'), title: $('title'), over: $('over'), pause: $('pause'),
   cl: $('cl'), cr: $('cr'), corners: $('corners'),
+  bL: $('bL'), bR: $('bR'), bHint: $('bHint'), arrowL: $('arrowL'), arrowR: $('arrowR'), tip: $('tip'), win: $('win'),
 };
 const fmt = n => Math.floor(n).toLocaleString('en-US');
 const pad2 = n => String(n).padStart(2, '0');
@@ -960,9 +1125,11 @@ const keyLabel = (k, text) => `<span class="key">${k}</span>${text}`;
 function renderCorners() {
   const sound = keyLabel('M', `SOUND ${AudioSys.muted ? 'OFF' : 'ON'}`);
   ui.corners.classList.toggle('hidden', state === 'playing' || state === 'dead');
-  if (state === 'title') { ui.cl.innerHTML = sound; ui.cr.innerHTML = keyLabel('ENTER', 'START'); }
-  else if (state === 'paused') { ui.cl.innerHTML = keyLabel('R', 'RESTART'); ui.cr.innerHTML = keyLabel('P', 'RESUME'); }
-  else if (state === 'over') { ui.cl.innerHTML = sound; ui.cr.innerHTML = keyLabel('ENTER', 'RETRY'); }
+  if (state === 'title' && controlsOpen) { ui.cl.innerHTML = keyLabel('ESC', 'RETURN'); ui.cr.innerHTML = ''; }
+  else if (state === 'title') { ui.cl.innerHTML = sound; ui.cr.innerHTML = keyLabel('ENTER', 'SELECT'); }
+  else if (state === 'paused') { ui.cl.innerHTML = keyLabel('P', 'RESUME'); ui.cr.innerHTML = keyLabel('ENTER', 'SELECT'); }
+  else if (state === 'win') { ui.cl.innerHTML = sound; ui.cr.innerHTML = keyLabel('ENTER', 'SELECT'); }
+  else if (state === 'over') { ui.cl.innerHTML = `${keyLabel('R', 'START OVER')} &nbsp;&nbsp; ${sound}`; ui.cr.innerHTML = keyLabel('ENTER', 'SELECT'); }
 }
 function refreshBestLabels() { $('tBest').textContent = best ? `BEST  ${fmt(best)}` : ''; }
 refreshBestLabels();
@@ -978,8 +1145,13 @@ function setFlash(amount, color) { flash = Math.max(flash, amount); fx.uniforms.
 // ---------- spawning ----------
 function spawnPattern(light) {
   const d = difficulty(), pl = lane, sp = Math.max(1, speed / 40);
+  // WHITEOUT is the fastest zone, so it only gets the simpler versions of each group:
+  // no corridors or checkerboards, two-lane gates, small scatters, single roadblock rows, two slow sweepers
+  const calm = !light && ZONES[zone].name === 'WHITEOUT';
   const options = (light
     ? [['scatter', 3], ['hurdles', 1], ['ringline', 2.5], ['spiral', 1]]
+    : calm
+    ? [['scatter', 3], ['gate', 2], ['hurdles', 1.2], ['spiral', 1], ['ringline', 1], ['sweeper', 1]]
     : [['scatter', 3], ['gate', 1.5 + d * 2], ['hurdles', 1.4], ['spiral', 1.0], ['ringline', 0.6],
        ['checker', d > 0.25 ? 1.4 : 0], ['sweeper', d > 0.2 ? 1.3 : 0], ['corridor', d > 0.45 ? 1.5 : 0]]
   ).filter(([n, w]) => w > 0 && n !== lastPattern);
@@ -991,7 +1163,7 @@ function spawnPattern(light) {
 
   switch (p) {
     case 'scatter': {
-      const n = Math.min(light ? 3 : 5, 2 + Math.floor(d * 3.5));
+      const n = Math.min(light || calm ? 3 : 5, 2 + Math.floor(d * 3.5));
       const lanes = shuffle([0, 1, 2, 3, 4, 5, 6, 7]);
       lanes.slice(0, n).forEach(L => addObs(Math.random() < 0.7 ? 'wall' : 'hurdle', at(L), Z - (Math.random() < 0.3 ? 8 * sp : 0)));
       const free = lanes[randInt(n, 7)];
@@ -999,13 +1171,13 @@ function spawnPattern(light) {
       return 16 * sp;
     }
     case 'gate': {
-      const g = randInt(-3, 3), gapW = d < 0.45 ? 2 : 1;
+      const g = randInt(-3, 3), gapW = d < 0.45 || calm ? 2 : 1;
       for (let k = gapW; k < 8; k++) addObs('wall', at(g + k), Z);
       for (let i = 0; i < 3; i++) addObs('ring', at(g), Z + 10 * sp - i * 5 * sp);
       return 10 * sp;
     }
     case 'hurdles': {
-      const rows = !light && d > 0.5 ? 2 : 1;
+      const rows = !light && !calm && d > 0.5 ? 2 : 1;
       for (let r = 0; r < rows; r++) {
         for (let k = 0; k < 8; k++) addObs('hurdle', at(k), Z - r * 30 * sp);
         const hl = randInt(-1, 1);
@@ -1030,7 +1202,7 @@ function spawnPattern(light) {
       return rows * 22 * sp;
     }
     case 'sweeper': {
-      const n = d > 0.6 ? 3 : 2, spin = (0.7 + d * 0.9) * (Math.random() < 0.5 ? -1 : 1), base = at(rand(1.5, 2.5));
+      const n = d > 0.6 && !calm ? 3 : 2, spin = (0.7 + d * (calm ? 0.4 : 0.9)) * (Math.random() < 0.5 ? -1 : 1), base = at(rand(1.5, 2.5));
       for (let i = 0; i < n; i++) addObs('sweeper', base + i * TAU / n, Z, { spin });
       for (let k = 0; k < 8; k += 2) addObs('ring', at(k), Z - 12 * sp);
       return 18 * sp;
@@ -1050,12 +1222,16 @@ function spawnPattern(light) {
 
 // ---------- stages: zones and Hunters ----------
 function enterStage(i) {
+  // checkpoint: the run as it was when this zone or Hunter began, for "continue" after a crash
+  checkpoint = { stageIdx: i, zoneCount, zone, score, rings, kills, runTime, runDist };
   stageIdx = i; stageT = 0;
   const st = STAGES[i % STAGES.length];
   if (st.boss !== undefined) { startBoss(st.boss); return; }
-  zone = st.zone; zoneCount++;
+  zone = st.zone; zoneCount++; apStats.zones++;
   setZonePalette(zone);
-  showBanner(ZONES[zone].name, `ZONE ${pad2(zoneCount)}`);
+  showBanner(ZONES[zone].name, loopCount() ? `LAP ${pad2(loopCount() + 1)} &nbsp;·&nbsp; ZONE ${pad2(zoneCount)}` : `ZONE ${pad2(zoneCount)}`);
+  console.info(`zone ${zoneCount}: ${ZONES[zone].name}`);
+  save.run.zone = zoneCount; save.furthestZone = Math.max(save.furthestZone, zoneCount); writeSave();
   if (zoneCount > 1) { AudioSys.sfxZone(); setFlash(0.25, pal.core); shake = Math.max(shake, 0.5); }
 }
 
@@ -1063,10 +1239,13 @@ function startBoss(kind) {
   const h = hunters[kind];
   h.model.children.forEach(c => { c.position.copy(c.userData.p0); c.quaternion.copy(c.userData.q0); c.scale.copy(c.userData.s0); });
   h.root.visible = true;
-  boss = { kind, h, phase: 'intro', t: 0, gap: 0.75, shields: 3, chaseT: 0, lungeCD: 3, lunge: null, z: 30, prevZ: 30, rotY: 0, roll: 0, coreAng: 0, roared: false, ringT: 0, open: 0.3 };
+  boss = { kind, h, phase: 'intro', t: 0, gap: 0.75, shields: 3, chaseT: 0, lungeCD: 3, lunge: null, z: 30, prevZ: 30, rotY: 0, roll: 0, coreAng: 0, roared: false, ringT: 0, open: 0.08 };
   ui.bName.textContent = BOSS_NAMES[kind];
+  console.info(`hunter: ${BOSS_NAMES[kind]}`);
   AudioSys.boss = true; AudioSys.sfxRoar();
   shake = Math.max(shake, 0.6);
+  // its entrance blocks your view, so clear what's coming and keep you safe until the chase starts
+  clearObs(o => o.type !== 'ring');
 }
 
 function endLunge() {
@@ -1076,6 +1255,7 @@ function endLunge() {
 
 function shieldHit() {
   if (invuln > 0 || state !== 'playing') return;
+  if (autopilot) { apStats.clips++; return; }   // demo runs can't be hurt; the slip is counted instead
   if (!boss || boss.shields <= 1) { if (boss) boss.shields = 0; crash(); return; }
   boss.shields--;
   invuln = 1.3; speedDip = 1;
@@ -1096,6 +1276,8 @@ function destroyBoss() {
   setFlash(0.65, WHITE); shake = 1.2; slowmo = 0.7; kick = 1;
   score += 5000 * mult; kills++; boostE = 1;
   bump(ui.score);
+  console.info(`hunter destroyed: ${BOSS_NAMES[b.kind]}`);
+  save.huntersDestroyed++; writeSave();
   h.model.children.forEach(c => {
     c.userData.v = new THREE.Vector3(c.position.x * 2.5 + rand(-6, 6), c.position.y * 2.5 + rand(-2, 7), rand(-14, 4));
     c.userData.w = new THREE.Vector3(rand(-4, 4), rand(-4, 4), rand(-4, 4));
@@ -1111,16 +1293,16 @@ function updateBoss(dt) {
   if (state === 'playing') {
     switch (b.phase) {
       case 'intro': {
-        // roars past, turns to show its face, then drops behind you
+        // Roars past you into the dark, turns round out there where the fog hides it (a long body can't
+        // turn inside the tunnel without cutting through the walls), charges back face-first, then
+        // rushes past you to take up the chase from behind.
         const t = b.t;
-        if (t < 1.2) { b.z = lerp(30, -26, easeOut(t / 1.2)); b.rotY = 0; b.open = 0.3; }
-        else if (t < 2.3) {
-          // swing round to face you, lurching in close
-          const u = (t - 1.2) / 1.1;
-          b.z = lerp(-26, -11, easeOut(Math.min(1, u * 1.5))) - Math.sin(u * Math.PI) * 2;
-          b.rotY = Math.PI * easeInOut(Math.min(1, u / 0.6)); b.open = 0.35;
+        if (t < 1.3) { b.z = lerp(30, -280, easeInOut(t / 1.3)); b.rotY = 0; b.open = 0.08; }
+        else if (t < 2.7) { b.z = lerp(-280, -12, easeOut((t - 1.3) / 1.4)); b.rotY = Math.PI; b.open = 0.1; }
+        else if (t < 3.5) {
+          b.z = -12 - Math.sin((t - 2.7) / 0.8 * Math.PI) * 1.5; b.rotY = Math.PI; b.open = 0.14;
           if (!b.roared) { b.roared = true; AudioSys.sfxRoar(); shake = Math.max(shake, 0.7); }
-        } else if (t < 3.0) { b.z = lerp(-11, 30, easeIn((t - 2.3) / 0.7)); b.rotY = Math.PI; }
+        } else if (t < 4.1) { b.z = lerp(-12, 30, easeIn((t - 3.5) / 0.6)); b.rotY = Math.PI; }
         else {
           b.phase = 'chase'; b.t = 0; b.rotY = 0; b.z = 18;
           showBanner(BOSS_NAMES[b.kind], 'HUNTER');
@@ -1130,7 +1312,7 @@ function updateBoss(dt) {
       }
       case 'chase': {
         b.chaseT += dt;
-        const close = b.kind ? 0.046 : 0.034;
+        const close = b.kind ? 0.046 : 0.034;   // the lap's second Hunter is the tougher fight
         b.gap = clamp(b.gap + (boosting ? 0.11 : -close) * dt, 0, 1);
         if (b.gap <= 0) { caught(); break; }
         if (!b.lunge) {
@@ -1160,10 +1342,10 @@ function updateBoss(dt) {
         }
         // keep the head just behind the camera so only its jaws/arms reach forward around the ship
         const camZ = CAM_Z + clamp((0.6 - b.gap) / 0.6, 0, 1) * 0.8;
-        const target = lerp(camZ + (b.kind ? 1.9 : 0.8), 24, b.gap) + Math.sin(elapsed * 3) * 0.3 - (b.lunge && b.lunge.t > 0.8 ? 0.4 : 0);
+        const target = lerp(camZ + (h.drill ? 1.9 : 0.8), 24, b.gap) + Math.sin(elapsed * 3) * 0.3 - (b.lunge && b.lunge.t > 0.8 ? 0.4 : 0);
         b.z = lerp(b.z, target, damp(5, dt));
-        b.roll += dt * (b.kind ? 0.6 : 0.3);
-        b.open = b.lunge ? (b.lunge.t < 0.8 ? 0.32 : -0.22) : 0.12 + 0.06 * Math.sin(elapsed * 5);
+        b.roll += dt * (h.drill ? 0.6 : 0.3);
+        b.open = b.lunge ? (b.lunge.t < 0.8 ? 0.16 : -0.22) : 0.08 + 0.05 * Math.sin(elapsed * 5);
         if (b.chaseT >= CHASE_TIME && state === 'playing') {
           b.phase = 'overshoot'; b.t = 0; b.z0 = b.z; endLunge();
           b.coreAng = (lane + (Math.random() < 0.5 ? -1 : 1) * randInt(2, 3)) * STEP;
@@ -1219,9 +1401,26 @@ function updateBoss(dt) {
   h.core.scale.setScalar(1 + 0.15 * Math.sin(elapsed * 10));
   h.coreRing.rotation.z += dt * 2;
   h.light.intensity = b.phase === 'chase' ? 15 + 60 * (1 - b.gap) : 25;
+
+  // once the core is exposed: a target reticle on it and a gold lane leading to it
+  const exposed = (b.phase === 'overshoot' && b.t > 0.5) || b.phase === 'ram';
+  const onLane = Math.abs(wrapAngle(b.coreAng - curAngle)) < 0.4;
+  h.reticle.visible = exposed;
+  if (exposed) {
+    h.reticle.rotation.z -= dt * 1.5;
+    h.reticle.scale.setScalar(1 + 0.18 * Math.sin(elapsed * 9));
+  }
+  guide.visible = exposed && state === 'playing';
+  if (guide.visible) {
+    guide.rotation.z = b.coreAng - curAngle;
+    guideUniforms.uTime.value = elapsed;
+    guideUniforms.uEnd.value = b.z + h.tailZ;
+    guideUniforms.uAlpha.value = (onLane ? 1.3 : 0.8) + 0.3 * Math.sin(elapsed * 8);
+  }
 }
 
 function caught() {
+  if (autopilot) { boss.gap = 0.2; apStats.clips++; return; }
   deathCause = 'caught';
   boss.z = 2; boss.open = -0.3;
   AudioSys.sfxSnap();
@@ -1229,11 +1428,13 @@ function caught() {
 }
 
 // ---------- actions ----------
-function startRun() {
+// Start a fresh run, or pass a checkpoint to pick up at the start of that zone or Hunter.
+// kind: 'new', 'continue' (after a crash) or 'lap' (the next lap after a win).
+function startRun(cp = null, kind = cp ? 'continue' : 'new') {
   clearObs();
   for (const s of shards) { s.life = 0; s.mesh.visible = false; }
   for (const h of hunters) h.root.visible = false;
-  boss = null; endLunge();
+  boss = null; endLunge(); guide.visible = false;
   state = 'playing'; deathCause = 'crash';
   runDist = 0; runTime = 0; score = 0; rings = 0; mult = 1; streak = 0; heat = 0; kills = 0;
   spawnTimer = 70; lastPattern = null; timeScale = 1; slowmo = 0; crashT = 0; flash = 0;
@@ -1241,12 +1442,96 @@ function startRun() {
   boostE = 1; boostAmt = 0; boosting = false; speedDip = 0; invuln = 0;
   lane = Math.round(curAngle / STEP);
   player.visible = true; trail.visible = true;
-  zoneCount = 0; enterStage(0);
-  ui.title.classList.add('hidden'); ui.over.classList.add('hidden'); ui.pause.classList.add('hidden');
+  zoneCount = 0;
+  if (cp) {
+    ({ score, rings, kills, runTime, runDist, zoneCount, zone } = cp);
+    setZonePalette(zone);
+    PAL_KEYS.forEach(k => pal[k].copy(palT[k]));
+    speed = baseSpeed();
+    spawnTimer = speed * 2;   // a breath before the first pattern
+    enterStage(cp.stageIdx);
+    ctrlT = 0; ui.ctrl.style.opacity = 0;
+  } else {
+    enterStage(0);
+    ctrlT = 10; ui.ctrl.style.opacity = 1;
+  }
+  ui.title.classList.add('hidden'); ui.over.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.win.classList.add('hidden');
+  controlsOpen = false; $('controls').classList.add('hidden');
   ui.hud.classList.remove('hidden');
-  ctrlT = 10; ui.ctrl.style.opacity = 1;
+  tipT = 0; ui.tip.style.opacity = 0;
+  if (kind === 'new') jumpTipDone = false;   // the jump tip shows once per run; continues and laps don't repeat it
   renderCorners();
   AudioSys.init(); AudioSys.start();
+  if (kind === 'continue') save.continues = (save.continues || 0) + 1;
+  else if (kind === 'new') save.runs++;
+  save.run = { zone: zoneCount, distance: Math.floor(runDist), score: Math.floor(score) }; writeSave();
+}
+
+// Back to the main menu from pause or the win screen.
+function goToMenu() {
+  state = 'title';
+  clearObs();
+  for (const s of shards) { s.life = 0; s.mesh.visible = false; }
+  for (const h of hunters) h.root.visible = false;
+  boss = null; endLunge(); guide.visible = false;
+  timeScale = 1; slowmo = 0; flash = 0; boostHeld = false; boosting = false;
+  playerH = 0; vy = 0; rollSpin = 0; invuln = 0;
+  player.visible = true; trail.visible = true;
+  ui.hud.classList.add('hidden'); ui.bossHud.classList.add('hidden');
+  ui.ctrl.style.opacity = 0; tipT = 0; ui.tip.style.opacity = 0;
+  ui.pause.classList.add('hidden'); ui.over.classList.add('hidden'); ui.win.classList.add('hidden');
+  ui.title.classList.remove('hidden');
+  titleSel = 0; renderTitleMenu();
+  if (AudioSys.ctx) { AudioSys.ctx.resume(); AudioSys.tapeStop(); }
+  refreshBestLabels(); renderCorners();
+}
+
+// The Grinder is down: the lap is cleared. Light show, stats, then "next lap" or "main menu".
+function startWin() {
+  state = 'win'; winT = 0; winPalT = 0; winFxT = 0.4; winSel = 0;
+  winLap = loopCount() + 1;
+  boss = null; guide.visible = false;
+  for (const h of hunters) h.root.visible = false;
+  const isBest = score > best;
+  if (isBest) best = Math.floor(score);
+  save.best = best; save.lapsCleared = Math.max(save.lapsCleared || 0, winLap);
+  save.run.distance = Math.floor(runDist); save.run.score = Math.floor(score); writeSave();
+  window.wt?.submitScore?.(Math.floor(score));   // Betacade leaderboard; a no-op elsewhere
+  console.info(`lap ${winLap} cleared`);
+
+  $('wTitle').textContent = `LAP ${pad2(winLap)} CLEARED`;
+  $('wTitle').dataset.text = $('wTitle').textContent;   // the glow layer draws the same text
+  $('wKick').textContent = winLap === 1 ? 'BOTH HUNTERS DESTROYED' : `${kills} HUNTERS DESTROYED`;
+  $('wSub').innerHTML = isBest ? '<span class="newbest">NEW BEST</span>' : '';
+  $('wScoreRow').classList.toggle('hl', isBest);
+  $('wBest').textContent = fmt(best);
+  winOpts = [
+    { label: `START LAP ${pad2(winLap + 1)}`, go: () => startRun({ stageIdx: stageIdx + 1, zoneCount, zone, score, rings, kills, runTime, runDist }, 'lap') },
+    { label: 'MAIN MENU', go: goToMenu },
+  ];
+  renderMenu($('wMenu'), winOpts, winSel);
+  ui.hud.classList.add('hidden'); ui.bossHud.classList.add('hidden'); tipT = 0; ui.tip.style.opacity = 0;
+  ui.win.classList.remove('hidden');
+  setFlash(0.8, WHITE); shake = Math.max(shake, 0.8); kick = 1;
+  AudioSys.sfxVictory();
+  renderCorners();
+}
+
+// Count the win screen's stats up as their rows appear.
+function updateWinStats() {
+  const k = easeOut(clamp((winT - 0.9) / 1.4, 0, 1));
+  const secs = Math.floor(runTime * k);
+  $('wScore').textContent = fmt(score * k);
+  $('wTime').textContent = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
+  $('wDist').textContent = fmt(runDist * k) + ' M';
+  $('wRings').textContent = Math.round(rings * k);
+  $('wKills').textContent = Math.round(kills * k);
+}
+
+// Name of the zone or Hunter a checkpoint starts at, e.g. "ZONE 03 · HEMORRHAGE" or "THE MAW".
+function areaName(cp) {
+  const st = STAGES[cp.stageIdx % STAGES.length];
+  return st.boss !== undefined ? BOSS_NAMES[st.boss] : `ZONE ${pad2(cp.zoneCount + 1)} &nbsp;·&nbsp; ${ZONES[st.zone].name}`;
 }
 
 function jump() {
@@ -1257,10 +1542,10 @@ function slam() { if (playerH > 0.05) { vy = -28; AudioSys.sfxSlam(); } }
 
 function collectRing(o) {
   o.dead = true;
-  rings++; streak++; heat = HEAT_MAX;
+  rings++; streak++; heat = HEAT_MAX; save.ringsCollected++; apStats.rings++;
   score += 100 * mult;
   boostE = Math.min(1, boostE + 0.15);
-  kick = 1;
+  kick = 1; flare = 1;
   burst(o.mesh.position, o.mesh.rotation.z, pal.ring);
   setFlash(0.05, pal.ring);
   AudioSys.sfxRing(streak);
@@ -1293,6 +1578,7 @@ function crash() {
   explode(tmpV, [pal.a, pal.core, pal.ring], 52, 9);
   AudioSys.sfxCrash(); AudioSys.tapeStop();
   ui.hud.classList.add('hidden'); ui.bossHud.classList.add('hidden'); ui.ctrl.style.opacity = 0;
+  tipT = 0; ui.tip.style.opacity = 0;
   tele.visible = false; spike.visible = false;
   renderCorners();
 }
@@ -1300,7 +1586,10 @@ function crash() {
 function showOver() {
   state = 'over'; overAt = elapsed;
   const isBest = score > best && score > 0;
-  if (isBest) { best = Math.floor(score); try { localStorage.setItem('redline-best', best); } catch (e) {} }
+  if (isBest) best = Math.floor(score);
+  save.best = best; save.bestDistance = Math.max(save.bestDistance, Math.floor(runDist));
+  save.run.distance = Math.floor(runDist); save.run.score = Math.floor(score); writeSave();
+  window.wt?.submitScore?.(Math.floor(score));   // Betacade leaderboard; a no-op elsewhere
   $('oHead').textContent = deathCause === 'caught' ? 'CAUGHT' : 'CRASHED';
   $('oScore').textContent = fmt(score);
   $('oDist').textContent = fmt(runDist) + ' M';
@@ -1312,21 +1601,88 @@ function showOver() {
     ? `HUNTER &nbsp;·&nbsp; ${BOSS_NAMES[boss.kind]}`
     : `ZONE ${pad2(zoneCount)} &nbsp;·&nbsp; ${ZONES[zone].name}`;
   $('oZone').innerHTML = isBest ? `<span class="newbest">NEW BEST</span> &nbsp;·&nbsp; ${where}` : where;
+  // continue from the zone/Hunter you died in, or start over (just "retry" if that's the same place)
+  const cp = checkpoint;
+  overOpts = cp && cp.stageIdx > 0
+    ? [{ label: `CONTINUE FROM ${areaName(cp)}`, go: () => startRun(cp) }, { label: 'START OVER', go: () => startRun() }]
+    : [{ label: 'RETRY', go: () => startRun() }];
+  overSel = 0;
+  renderOverMenu();
+  $('oMenuHint').innerHTML = overOpts.length > 1 ? '↑ ↓ SELECT &nbsp;&nbsp; ENTER CONFIRM' : 'PRESS ENTER';
   ui.over.classList.remove('hidden');
   refreshBestLabels();
   renderCorners();
 }
 
+const renderMenu = (el, opts, sel) => {
+  el.innerHTML = opts.map((o, i) => `<div class="item${i === sel ? ' active' : ''}" data-i="${i}">${o.label}</div>`).join('');
+};
+function renderOverMenu() { renderMenu($('oMenu'), overOpts, overSel); }
+
+// ---------- main menu: PLAY / CONTROLS ----------
+const titleOpts = [
+  { label: 'PLAY', go: () => { AudioSys.init(); AudioSys.sfxUi(); startRun(); } },
+  { label: 'CONTROLS', go: () => setControlsOpen(true) },
+];
+const renderTitleMenu = () => renderMenu($('tMenu'), titleOpts, titleSel);
+function setControlsOpen(open) {
+  controlsOpen = open;
+  AudioSys.init(); AudioSys.sfxUi();
+  ui.title.classList.toggle('hidden', open);
+  $('controls').classList.toggle('hidden', !open);
+  renderCorners();
+}
+renderTitleMenu();
+$('tMenu').addEventListener('click', (e) => { const el = e.target.closest('[data-i]'); if (el && state === 'title') titleOpts[+el.dataset.i].go(); });
+$('tMenu').addEventListener('mouseover', (e) => {
+  const el = e.target.closest('[data-i]');
+  if (el && +el.dataset.i !== titleSel) { titleSel = +el.dataset.i; renderTitleMenu(); }
+});
+$('controls').addEventListener('click', (e) => { if (e.target.closest('.back')) setControlsOpen(false); });
+function chooseOver(i) {
+  if (state !== 'over' || elapsed - overAt < 0.6) return;
+  AudioSys.init(); AudioSys.sfxUi();
+  overOpts[i].go();
+}
+$('oMenu').addEventListener('click', (e) => { const el = e.target.closest('[data-i]'); if (el) chooseOver(+el.dataset.i); });
+$('oMenu').addEventListener('mouseover', (e) => {
+  const el = e.target.closest('[data-i]');
+  if (el && +el.dataset.i !== overSel) { overSel = +el.dataset.i; renderOverMenu(); }
+});
+
 function togglePause() {
   if (state === 'playing') {
     state = 'paused'; ui.pause.classList.remove('hidden');
+    pauseSel = 0; renderPauseMenu();
+    ui.ctrl.style.opacity = 0;
     if (AudioSys.ctx) AudioSys.ctx.suspend();
   } else if (state === 'paused') {
     state = 'playing'; ui.pause.classList.add('hidden');
+    if (ctrlT > 0) ui.ctrl.style.opacity = 1;
     if (AudioSys.ctx) AudioSys.ctx.resume();
   }
   renderCorners();
 }
+const pauseOpts = [
+  { label: 'RESUME', go: togglePause },
+  { label: 'RESTART', go: () => startRun() },
+  { label: 'MAIN MENU', go: goToMenu },
+];
+const renderPauseMenu = () => renderMenu($('pMenu'), pauseOpts, pauseSel);
+
+// Mouse support for the pause and win menus: hover to select, click to choose.
+function hookMenu(el, getOpts, getSel, setSel, canChoose) {
+  el.addEventListener('click', (e) => {
+    const it = e.target.closest('[data-i]');
+    if (it && canChoose()) { AudioSys.sfxUi(); getOpts()[+it.dataset.i].go(); }
+  });
+  el.addEventListener('mouseover', (e) => {
+    const it = e.target.closest('[data-i]');
+    if (it && +it.dataset.i !== getSel()) { setSel(+it.dataset.i); renderMenu(el, getOpts(), getSel()); }
+  });
+}
+hookMenu($('pMenu'), () => pauseOpts, () => pauseSel, i => { pauseSel = i; }, () => state === 'paused');
+hookMenu($('wMenu'), () => winOpts, () => winSel, i => { winSel = i; }, () => state === 'win' && winT > 2.2);
 
 // ---------- input ----------
 addEventListener('keydown', (e) => {
@@ -1341,8 +1697,34 @@ addEventListener('keydown', (e) => {
     return;
   }
   if (k === 'r' || k === 'R') { AudioSys.init(); startRun(); return; }
-  if (state === 'title' || (state === 'over' && elapsed - overAt > 0.6)) {
-    if (k === 'Enter' || k === ' ') { AudioSys.init(); AudioSys.sfxUi(); startRun(); }
+  if (state === 'title' && controlsOpen) {
+    if (k === 'Escape' || k === 'Enter' || k === ' ' || k === 'Backspace') setControlsOpen(false);
+    return;
+  }
+  if (state === 'title') {
+    if (k === 'ArrowUp' || k === 'w' || k === 'W' || k === 'ArrowDown' || k === 's' || k === 'S') { titleSel = 1 - titleSel; renderTitleMenu(); }
+    else if (k === 'Enter' || k === ' ') titleOpts[titleSel].go();
+    return;
+  }
+  if (state === 'over') {
+    const n = overOpts.length;
+    if (k === 'ArrowUp' || k === 'w' || k === 'W') { overSel = (overSel - 1 + n) % n; renderOverMenu(); }
+    else if (k === 'ArrowDown' || k === 's' || k === 'S') { overSel = (overSel + 1) % n; renderOverMenu(); }
+    else if (k === 'Enter' || k === ' ') chooseOver(overSel);
+    return;
+  }
+  if (state === 'win') {
+    if (winT < 2.2) return;   // let the light show land before the menu takes input
+    if (k === 'ArrowUp' || k === 'w' || k === 'W' || k === 'ArrowDown' || k === 's' || k === 'S') { winSel = 1 - winSel; renderMenu($('wMenu'), winOpts, winSel); }
+    else if (k === 'Enter' || k === ' ') { AudioSys.sfxUi(); winOpts[winSel].go(); }
+    return;
+  }
+  if (state === 'paused') {
+    const n = pauseOpts.length;
+    if (k === 'p' || k === 'P' || k === 'Escape') togglePause();
+    else if (k === 'ArrowUp' || k === 'w' || k === 'W') { pauseSel = (pauseSel - 1 + n) % n; renderPauseMenu(); }
+    else if (k === 'ArrowDown' || k === 's' || k === 'S') { pauseSel = (pauseSel + 1) % n; renderPauseMenu(); }
+    else if (k === 'Enter' || k === ' ') { if (AudioSys.ctx) AudioSys.ctx.resume(); AudioSys.sfxUi(); pauseOpts[pauseSel].go(); }
     return;
   }
   if (k === 'p' || k === 'P' || k === 'Escape') { togglePause(); return; }
@@ -1353,8 +1735,10 @@ addEventListener('keydown', (e) => {
   else if (k === 'ArrowDown' || k === 's' || k === 'S') slam();
 });
 addEventListener('keyup', (e) => { if (e.key === 'Shift') boostHeld = false; });
-ui.title.addEventListener('click', () => { if (state === 'title') { AudioSys.init(); startRun(); } });
 addEventListener('blur', () => { boostHeld = false; if (state === 'playing') togglePause(); });
+// The host page's Pause button (Betacade); these events never fire elsewhere.
+addEventListener('wt:pause', () => { boostHeld = false; if (state === 'playing') togglePause(); });
+addEventListener('wt:resume', () => setTimeout(() => { if (state === 'paused' && AudioSys.ctx) AudioSys.ctx.suspend(); }, 50));
 
 // ---------- update ----------
 const vp = new THREE.Vector3();
@@ -1371,21 +1755,25 @@ function update(rdt) {
   boosting = state === 'playing' && boostHeld && boostE > 0.01;
   if (boosting) boostE = Math.max(0, boostE - 0.33 * dt);
   if (boosting && !wasBoosting) { setFlash(0.3, WHITE); shake = Math.max(shake, 0.3); kick = 1; AudioSys.sfxBoost(); }
-  boostAmt = lerp(boostAmt, boosting ? 1 : 0, damp(boosting ? 7 : 3, dt));
+  boostAmt = lerp(boostAmt, boosting ? 1 : state === 'win' ? 0.6 : 0, damp(boosting ? 7 : 3, dt));
   speedDip = Math.max(0, speedDip - dt);
   invuln = Math.max(0, invuln - dt);
 
   // speed & distance
   if (state === 'playing') speed = baseSpeed() * (1 + 0.5 * boostAmt) * (1 - 0.3 * speedDip);
   else if (state === 'title') speed = lerp(speed, 30, damp(2, dt));
+  else if (state === 'win') speed = lerp(speed, MAX_SPEED * 0.85, damp(1.2, dt));   // victory warp
   else speed *= Math.exp(-dt * 1.6);
   distance += speed * dt;
   const sf = clamp((speed - MIN_SPEED) / (MAX_SPEED - MIN_SPEED), 0, 1);
   AudioSys.intensity = sf;
   AudioSys.setWind(sf, boostAmt);
 
-  bendX = 0.6 * (0.00085 * Math.sin(distance * 0.0019) + 0.0004 * Math.sin(distance * 0.0051 + 2.0));
-  bendY = 0.6 * (0.0006 * Math.sin(distance * 0.0014 + 1.1) + 0.00025 * Math.sin(distance * 0.0043));
+  // the tunnel straightens out for Hunter fights so their long bodies never cut through its walls
+  const bossSoon = state === 'playing' && STAGES[(stageIdx + 1) % STAGES.length].boss !== undefined && stageT > ZONE_TIME - 3;
+  bendScale = lerp(bendScale, (boss && boss.phase !== 'done') || bossSoon ? 0 : 1, damp(1.5, dt));
+  bendX = bendScale * 0.6 * (0.00085 * Math.sin(distance * 0.0019) + 0.0004 * Math.sin(distance * 0.0051 + 2.0));
+  bendY = bendScale * 0.6 * (0.0006 * Math.sin(distance * 0.0014 + 1.1) + 0.00025 * Math.sin(distance * 0.0043));
 
   // stages, multiplier decay, title attract mode
   if (state === 'playing') {
@@ -1394,12 +1782,17 @@ function update(rdt) {
     score += speed * dt * 0.25 * mult * (boosting ? 2 : 1);
     const st = STAGES[stageIdx % STAGES.length];
     if (st.zone !== undefined && stageT >= ZONE_TIME) enterStage(stageIdx + 1);
-    else if (st.boss !== undefined && boss && boss.phase === 'done') { boss = null; enterStage(stageIdx + 1); }
+    else if (st.boss !== undefined && boss && boss.phase === 'done') {
+      if (st.boss === BOSS_NAMES.length - 1) startWin();   // the Grinder closes the lap
+      else { boss = null; enterStage(stageIdx + 1); }
+    }
     if (heat > 0) {
       heat -= dt;
       if (heat <= 0) { streak = 0; if (mult > 1) { mult--; heat = HEAT_MAX * 0.6; } }
     }
     if (ctrlT > 0) { ctrlT -= rdt; if (ctrlT <= 0) ui.ctrl.style.opacity = 0; }
+    saveT += rdt;
+    if (saveT > 2) { saveT = 0; save.run.distance = Math.floor(runDist); save.run.score = Math.floor(score); writeSave(); }
   } else if (state === 'title') {
     titleZoneT += rdt;
     if (titleZoneT > 7) { titleZoneT = 0; zone = (zone + 1) % ZONES.length; setZonePalette(zone); }
@@ -1413,8 +1806,34 @@ function update(rdt) {
     crashT += rdt;
     timeScale = crashT < 0.6 ? 0.25 : Math.min(1, timeScale + rdt * 1.5);
     if (crashT > 1.6) showOver();
+  } else if (state === 'win') {
+    // victory light show: the tunnel cycles through every zone's colours, fireworks burst down
+    // the tunnel, and the craft weaves and barrel-rolls on its own
+    winT += rdt; timeScale = 1;
+    winPalT += rdt;
+    if (winPalT > 1.1) { winPalT = 0; setZonePalette(randInt(0, ZONES.length - 1)); }
+    winFxT -= rdt;
+    if (winFxT <= 0) {
+      winFxT = rand(0.1, 0.28);
+      const z = ZONES[randInt(0, ZONES.length - 1)];
+      const c = new THREE.Color(pick([z.a, z.ring, z.core, z.b]));
+      surf(rand(0, TAU), rand(1.2, 4.2), rand(-70, -18), tmpV);
+      burst(tmpV, rand(0, TAU), c, 0, rand(2, 5));
+      if (Math.random() < 0.6) burst(tmpV, rand(0, TAU), c, 0.08, rand(4, 7));
+      explode(tmpV, [c, WHITE], 10, 7, 1.3, 1.3);
+      kick = Math.max(kick, 0.5);
+    }
+    attractT -= rdt;
+    if (attractT <= 0) {
+      attractT = rand(0.5, 1.1);
+      const d = Math.random() < 0.5 ? -1 : 1; lane += d; rollDir = -d;
+      if (Math.random() < 0.45) jump();
+    }
+    if (winT < 2.6) updateWinStats();   // stop touching the DOM once the count-up has landed
   }
-  for (const k of PAL_KEYS) pal[k].lerp(palT[k], damp(1.8, rdt));
+  for (const k of PAL_KEYS) pal[k].lerp(palT[k], damp(state === 'win' ? 3 : 1.8, rdt));
+
+  if (state === 'playing' && autopilot) autopilotThink(dt);
 
   // player motion
   if (state !== 'dead' && state !== 'over') {
@@ -1429,13 +1848,16 @@ function update(rdt) {
   spawnTimer -= speed * dt;
   if (spawnTimer <= 0) {
     if (state === 'playing') {
-      if (!boss) spawnTimer = spawnPattern(false) + speed * lerp(1.7, 0.8, difficulty());
+      if (!boss) {
+        const ease = ZONES[zone].name === 'WHITEOUT' ? 1 / 0.6 : 1;   // ~40% fewer obstacles in WHITEOUT
+        spawnTimer = (spawnPattern(false) + speed * lerp(1.7, 0.8, difficulty())) * ease;
+      }
       else if (boss.phase === 'chase') spawnTimer = spawnPattern(true) + speed * lerp(1.7, 0.8, difficulty()) * 1.6;
       else spawnTimer = 30;
-    } else if (state === 'title') {
-      const dir = Math.random() < 0.5 ? -1 : 1, base = lane + randInt(-2, 2);
-      for (let i = 0; i < 12; i++) addObs('ring', (base + Math.floor(i / 2) * dir) * STEP, spawnZ() - i * 6);
-      spawnTimer = 150;
+    } else if (state === 'title' || state === 'win') {
+      const dir = Math.random() < 0.5 ? -1 : 1, base = lane + randInt(-2, 2), sp = state === 'win' ? 3 : 1;
+      for (let i = 0; i < 12; i++) addObs('ring', (base + Math.floor(i / 2) * dir) * STEP, spawnZ() - i * 6 * sp);
+      spawnTimer = state === 'win' ? 140 : 150;
     } else spawnTimer = 50;
   }
 
@@ -1452,8 +1874,9 @@ function update(rdt) {
         const diff = Math.abs(wrapAngle(o.angle - curAngle));
         if (o.type === 'ring') {
           if (diff < 0.34 && Math.abs(o.elev - (playerH + HOVER + 0.2)) < 0.9) collectRing(o);
-        } else if (diff < o.ha + PH && playerH < o.height && invuln <= 0) {
-          if (boss && boss.phase !== 'dying' && boss.phase !== 'done') {
+        } else if (diff < o.ha + PH && playerH < o.height && invuln <= 0 && !(boss && boss.phase === 'intro')) {
+          if (autopilot) { if (!o.clipped) { o.clipped = true; apStats.clips++; } }
+          else if (boss && boss.phase !== 'dying' && boss.phase !== 'done') {
             o.dead = true;
             explode(o.mesh.position, [pal.obs, pal.hurdle], 16, 6, 1);
             shieldHit();
@@ -1472,12 +1895,23 @@ function update(rdt) {
     o.mesh.visible = o.z > VISIBLE_Z;
   }
 
+  // first roadblocks of a run: show the jump keys at the top about 2 s before they arrive
+  if (state === 'playing' && !jumpTipDone) {
+    const next = obs.find(o => o.type === 'hurdle' && !o.passed && o.z < 0 && -o.z < speed * 2);
+    if (next) { jumpTipDone = true; tipT = -next.z / speed + 0.8; ui.tip.style.opacity = 1; }
+  }
+  if (tipT > 0) {
+    tipT -= dt;
+    ui.tip.classList.toggle('low', !!boss);
+    if (tipT <= 0) ui.tip.style.opacity = 0;
+  }
+
   if (boss) updateBoss(dt);
   const danger = boss && boss.phase === 'chase' ? clamp((0.6 - boss.gap) / 0.6, 0, 1) : (boss && boss.phase === 'intro' ? 0.25 : 0);
 
   // beat pulse
   const phase = AudioSys.beatPhase() ?? ((elapsed / BEAT) % 1);
-  const pulse = Math.exp(-phase * 5) * (state === 'playing' ? 1 : 0.6);
+  const pulse = Math.exp(-phase * 5) * (state === 'playing' || state === 'win' ? 1 : 0.6);
   kick = Math.max(0, kick - rdt * 4);
 
   // materials follow the palette
@@ -1492,10 +1926,13 @@ function update(rdt) {
   pickupMat.color.copy(pal.ring).multiplyScalar(1.8 + pulse * 0.6);
   pickupHaloMat.color.copy(pal.ring).multiplyScalar(0.35);
   ribMat.color.copy(pal.b).multiplyScalar(1.1 + pulse * 1.0);
-  accentLines.color.copy(pal.a).multiplyScalar(1.6);
-  engineMat.color.copy(pal.a).multiplyScalar(1.6 + boostAmt * 1.5);
-  flameMat.color.copy(pal.a).lerp(WHITE, boostAmt * 0.6).multiplyScalar(0.9 + boostAmt * 1.2);
-  underglowMat.color.copy(pal.a).multiplyScalar(0.3 + pulse * 0.2 + kick * 0.5 + boostAmt * 0.4);
+  // a ring pickup flares the craft gold for a moment
+  flare = Math.max(0, flare - rdt * 3);
+  chromeMat.emissive.copy(pal.ring).multiplyScalar(flare * 0.45);
+  accentLines.color.copy(pal.a).lerp(pal.ring, flare).multiplyScalar(1.6 + flare * 1.6);
+  engineMat.color.copy(pal.a).lerp(pal.ring, flare).multiplyScalar(1.6 + boostAmt * 1.5 + flare * 1.5);
+  flameMat.color.copy(pal.a).lerp(WHITE, boostAmt * 0.6).lerp(pal.ring, flare * 0.7).multiplyScalar(0.9 + boostAmt * 1.2 + flare);
+  underglowMat.color.copy(pal.a).lerp(pal.ring, flare).multiplyScalar(0.3 + pulse * 0.2 + kick * 0.5 + boostAmt * 0.4 + flare * 0.8);
 
   // tunnel & scenery
   const fogFar = lerp(205, 320, sf);
@@ -1554,8 +1991,8 @@ function update(rdt) {
   player.scale.set(0.9 * (1 + squash * 0.15), 0.9 * (1 - squash * 0.2), 0.9 * (1 + squash * 0.15));
   if (state === 'playing') player.visible = invuln > 0 ? Math.floor(elapsed * 20) % 2 === 0 : true;
   for (const f of flames) f.scale.set(1 + boostAmt * 0.5, 1 + boostAmt * 0.5, 0.7 + Math.random() * 0.4 + sf * 0.9 + boostAmt * 2.2);
-  playerLight.color.copy(pal.a);
-  playerLight.intensity = 6 + kick * 25;
+  playerLight.color.copy(pal.a).lerp(pal.ring, flare);
+  playerLight.intensity = 6 + kick * 25 + flare * 20;
   playerLight.position.set(0, -R + 1.8 + playerH, 0.6);
 
   // engine trails
@@ -1608,7 +2045,7 @@ function update(rdt) {
   const camY = rand(-1, 1) * sh + Math.sin(elapsed * 37.7 + 1.3) * rattle;
   camera.position.set(camX, -R + 2.45 + playerH * 0.35 + danger * 0.3 + camY, CAM_Z + danger * 0.8);
   camera.lookAt(0, -R + 0.7 + playerH * 0.2, -11);
-  camRoll = lerp(camRoll, clamp(angVel * 0.035, -0.22, 0.22), damp(6, rdt));
+  camRoll = lerp(camRoll, state === 'win' ? Math.sin(elapsed * 0.9) * 0.2 : clamp(angVel * 0.035, -0.22, 0.22), damp(state === 'win' ? 2 : 6, rdt));
   camera.rotateZ(camRoll);
   camera.fov = 70 + sf * 18 + boostAmt * 12 + pulse * 0.6 + kick * 1.2;
   camera.updateProjectionMatrix();
@@ -1620,7 +2057,7 @@ function update(rdt) {
   bendPos(-120, vp).project(camera);
   fx.uniforms.uCenter.value.set(vp.x * 0.5 + 0.5, vp.y * 0.5 + 0.5);
   fx.uniforms.uBlur.value = sf * sf * 0.07 + boostAmt * 0.08 + flash * 0.04;
-  bloom.strength = 0.7 + pulse * 0.2 + kick * 0.25 + flash * 0.6;
+  bloom.strength = 0.7 + pulse * (state === 'win' ? 0.45 : 0.2) + kick * 0.25 + flash * 0.6;
   fx.uniforms.uAmount.value = 0.003 + sf * 0.008 + boostAmt * 0.006 + pulse * 0.002 + shake * 0.02;
   fx.uniforms.uTime.value = elapsed;
   fx.uniforms.uFlash.value = flash;
@@ -1640,13 +2077,48 @@ function update(rdt) {
       ui.gap.classList.toggle('low', boss.phase === 'chase' && boss.gap < 0.3);
       ui.bTime.style.width = ((boss.phase === 'intro' ? 0 : boss.phase === 'chase' ? boss.chaseT / CHASE_TIME : 1) * 100) + '%';
       [...ui.shields.children].forEach((el, i) => el.classList.toggle('off', i >= boss.shields));
+      renderBossHint();
     }
+    // arrows toward the exposed core's lane
+    const coreDiff = boss && (boss.phase === 'overshoot' || boss.phase === 'ram') ? wrapAngle(boss.coreAng - curAngle) : 0;
+    ui.arrowL.classList.toggle('hidden', !(coreDiff < -0.3));
+    ui.arrowR.classList.toggle('hidden', !(coreDiff > 0.3));
+  } else { ui.arrowL.classList.add('hidden'); ui.arrowR.classList.add('hidden'); }
+}
+
+// Tell the player what to do right now in a Hunter fight: one short line under its HUD.
+let hintKey = '';
+function setBossHint(key, html, cls = '') {
+  if (key === hintKey) return;
+  hintKey = key; ui.bHint.innerHTML = html; ui.bHint.className = cls;
+}
+function renderBossHint() {
+  const b = boss, shift = '<span class="key">SHIFT</span>';
+  const onLane = Math.abs(wrapAngle(b.coreAng - curAngle)) < 0.4;
+  if (b.phase === 'intro') {
+    ui.bL.textContent = 'GAP'; ui.bR.textContent = '';
+    setBossHint('intro', 'HUNTER INCOMING', 'warn pulse');
+  } else if (b.phase === 'chase') {
+    ui.bL.textContent = 'GAP';
+    ui.bR.textContent = `SURVIVE ${Math.max(0, Math.ceil(CHASE_TIME - b.chaseT))}`;
+    if (b.lunge && b.lunge.t < 1.0) setBossHint('dodge', '← &nbsp;DODGE THE RED LANE&nbsp; →', 'warn pulse');
+    else if (boostE < 0.05) setBossHint('empty', 'BOOST EMPTY &nbsp;·&nbsp; FLY THROUGH RINGS TO REFILL', 'warn');
+    else if (b.gap < 0.3) setBossHint('close', `IT'S ON YOU &nbsp;·&nbsp; HOLD ${shift} TO BOOST`, 'warn pulse');
+    else setBossHint('chase', `HOLD ${shift} TO BOOST &nbsp;·&nbsp; KEEP YOUR GAP`);
+  } else {
+    ui.bL.textContent = 'CORE EXPOSED'; ui.bR.textContent = '';
+    if (b.phase === 'overshoot') setBossHint('over', 'IT OVERSHOT YOU &nbsp;·&nbsp; FIND THE GOLD LANE', 'go');
+    else if (!onLane) setBossHint('steer', 'STEER INTO THE GOLD LANE', 'go pulse');
+    else setBossHint('ram', `HOLD ${shift} &nbsp;·&nbsp; RAM THE CORE`, 'go pulse');
   }
 }
 
 // Demo helpers for the browser console:
-//   redline.boss(0) / redline.boss(1)  jump straight to THE MAW / THE GRINDER
+//   redline.boss(0) / redline.boss(1)  jump straight to THE GRINDER / THE MAW
 //   redline.skipChase()                skip to the Hunter's overshoot and core
+//   redline.autopilot(true)            the game plays itself (dodges, jumps, boosts, rams cores) and can't crash
+//   redline.startAt(stage, {runTime})  start partway through a run (stage = index into STAGES)
+//   redline.record({seconds})          record a 1920×1080 MP4 take with a title and end card
 window.redline = {
   boss(kind = 0) {
     if (state !== 'playing') startRun();
@@ -1655,7 +2127,129 @@ window.redline = {
     enterStage(kind ? 5 : 2);
   },
   skipChase() { if (boss && boss.phase === 'chase') boss.chaseT = CHASE_TIME; },
+  autopilot(on = true) { autopilot = on; if (!on) { boostHeld = false; apBoost = false; } return { ...apStats }; },
+  stats() { return { ...apStats }; },
+  resetStats() { Object.keys(apStats).forEach(k => { apStats[k] = 0; }); },
+  startAt(stage, { runTime: rt, score: sc = 0 } = {}) {
+    // rebuild the checkpoint a real run would have at the start of that stage
+    let zc = 0, kl = 0, zn = 0, t = 0;
+    for (let i = 0; i < stage; i++) {
+      const st = STAGES[i % STAGES.length];
+      if (st.zone !== undefined) { zc++; zn = st.zone; t += ZONE_TIME; } else { kl++; t += CHASE_TIME + 6; }
+    }
+    rt = rt ?? t;
+    AudioSys.init();
+    startRun({ stageIdx: stage, zoneCount: zc, zone: zn, score: sc, rings: 0, kills: kl, runTime: rt, runDist: rt * (MIN_SPEED + MAX_SPEED) / 2 * 0.6 }, 'demo');
+  },
+  record,
 };
+
+// The autopilot: picks the safest nearby lane (rings preferred), jumps roadblocks on time and boosts.
+function autopilotThink(dt) {
+  apCooldown -= dt;
+  const look = 1.4;                                  // seconds of track it reads ahead
+  const blockedAt = L => {                           // soonest arrival (s) of anything solid in lane L
+    let soonest = Infinity;
+    for (const o of obs) {
+      if (o.dead || o.type === 'ring' || o.type === 'hurdle' || o.z > 1.5) continue;
+      const t = (-(o.z + o.hd) - 0.9) / speed;
+      if (t > look) continue;
+      const ang = o.angle + (o.spin || 0) * Math.max(0, t);   // where a sweeper will be when it arrives
+      if (Math.abs(wrapAngle(ang - L * STEP)) < o.ha + PH + 0.14) soonest = Math.min(soonest, Math.max(0, t));
+    }
+    if (boss && boss.lunge && Math.abs(wrapAngle(boss.lunge.ang - L * STEP)) < 0.4) soonest = Math.min(soonest, 0.3);
+    return soonest;
+  };
+  const ringAt = L => obs.some(o => o.type === 'ring' && !o.dead && o.z < 0 && -o.z / speed < look && o.elev < 1.5 && Math.abs(wrapAngle(o.angle - L * STEP)) < 0.3);
+  const goal = boss && (boss.phase === 'overshoot' || boss.phase === 'ram') ? Math.round(boss.coreAng / STEP) : null;
+
+  let best = lane, bestScore = -Infinity;
+  for (let L = lane - 3; L <= lane + 3; L++) {
+    let sc = -Math.abs(L - lane) * 0.7;
+    const tb = blockedAt(L);
+    if (tb < look) sc -= 20 + (look - tb) * 10;
+    for (let k = Math.min(L, lane); k <= Math.max(L, lane); k++) if (k !== L && blockedAt(k) < 0.35) sc -= 12;   // can't slip through
+    if (ringAt(L)) sc += 2;
+    if (goal !== null && Math.abs(wrapAngle(L * STEP - goal * STEP)) < 0.1) sc += 40;
+    if (sc > bestScore) { bestScore = sc; best = L; }
+  }
+  if (best !== lane && apCooldown <= 0) {             // one lane at a time, like key presses
+    const d = Math.sign(best - lane); lane += d; rollDir = -d; apCooldown = 0.11; AudioSys.sfxSwitch();
+  }
+
+  // jump a roadblock in our lane so we're at the top of the arc as it passes
+  if (playerH <= 0.001) {
+    for (const o of obs) {
+      if (o.type !== 'hurdle' || o.passed || Math.abs(wrapAngle(o.angle - curAngle)) > o.ha + PH + 0.1) continue;
+      const t = (-(o.z + o.hd) - 0.9) / speed;
+      if (t > 0.14 && t < 0.42) { jump(); apStats.jumps++; break; }
+    }
+  }
+
+  // boost: keep a Hunter's gap, ram its core, otherwise ride the warp whenever there's charge
+  if (boss && boss.phase === 'chase') apBoost = boss.gap < 0.65 && boostE > 0.02;
+  else if (boss && boss.phase === 'ram') apBoost = goal !== null && Math.abs(wrapAngle(boss.coreAng - curAngle)) < 0.4;
+  // fewer, longer boosts: each one punches the camera's field of view, so frequent taps read as constant zooming
+  else apBoost = apBoost ? boostE > 0.05 : boostE > 0.95;
+  boostHeld = apBoost;
+  if (boosting) apStats.boostTime += dt;
+}
+
+// Record a take: the scene renders at a fixed size into a canvas that also draws the title and end
+// cards, and the browser's own MediaRecorder writes it straight to MP4 (H.264). No editing step.
+async function record({ seconds = 15, fps = 60, width = 1920, height = 1080, title = 'REDLINE', intro = false, upload = null, name = 'redline.mp4' } = {}) {
+  await document.fonts.load('900 100px Montserrat').catch(() => {});
+  renderer.setPixelRatio(1); composer.setPixelRatio(1);
+  renderer.setSize(width, height, false); composer.setSize(width, height);
+  camera.aspect = width / height; camera.updateProjectionMatrix();
+  const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
+  Object.assign(rec, { active: true, t: 0, seconds, title, intro, ctx: canvas.getContext('2d'), width, height });
+  const mime = ['video/mp4;codecs=avc1.640028', 'video/mp4', 'video/webm;codecs=vp9'].find(t => MediaRecorder.isTypeSupported(t));
+  const mr = new MediaRecorder(canvas.captureStream(fps), { mimeType: mime, videoBitsPerSecond: 18e6 });
+  const chunks = [];
+  mr.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+  const stopped = new Promise(r => { mr.onstop = r; });
+  const before = { ...apStats };
+  mr.start(250);
+  await new Promise(r => setTimeout(r, seconds * 1000));
+  mr.stop(); await stopped;
+  rec.active = false;
+  fitToWindow();
+  const blob = new Blob(chunks, { type: mime });
+  const stats = Object.fromEntries(Object.keys(apStats).map(k => [k, +(apStats[k] - before[k]).toFixed(2)]));
+  let saved = null;
+  if (upload) saved = await fetch(`${upload}?name=${encodeURIComponent(name)}`, { method: 'POST', body: blob, headers: { 'Content-Type': mime } }).then(r => r.ok).catch(e => String(e));
+  return { bytes: blob.size, mime, saved, stats };
+}
+
+// Composite one recorded frame: the rendered scene plus the end card (and the opening title if asked for).
+function drawRecFrame(rdt) {
+  const { ctx, width: w, height: h, seconds, title } = rec;
+  rec.t += rdt;
+  const t = rec.t;
+  ctx.globalAlpha = 1;
+  ctx.drawImage(renderer.domElement, 0, 0, w, h);
+  const drawTitle = (alpha, y, size) => {
+    if (alpha <= 0) return;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.font = `900 ${size}px Montserrat, "Helvetica Neue", Arial, sans-serif`;
+    ctx.letterSpacing = `${Math.round(size * 0.34)}px`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(255,50,20,0.75)'; ctx.shadowBlur = size * 0.45;
+    ctx.fillStyle = '#fff';
+    ctx.fillText(title, w / 2 + size * 0.17, y);   // letter-spacing trails the last letter; re-centre
+    ctx.restore();
+  };
+  // optional opening title over the live run (off by default: promos end on the title instead)
+  if (rec.intro) drawTitle(clamp(t / 0.5, 0, 1) * (1 - clamp((t - 2.2) / 0.6, 0, 1)), h * 0.22, h * 0.15);
+  // closing: fade toward black and land on the title
+  const end = seconds - 2.3;
+  if (t > end) {
+    ctx.save(); ctx.globalAlpha = clamp((t - end) / 0.7, 0, 1) * 0.9; ctx.fillStyle = '#050000'; ctx.fillRect(0, 0, w, h); ctx.restore();
+    drawTitle(clamp((t - end - 0.3) / 0.6, 0, 1), h * 0.5, h * 0.17);
+  }
+}
 
 // ---------- main loop ----------
 let last = performance.now();
@@ -1664,6 +2258,7 @@ function frame(now) {
   last = now;
   update(rdt);
   composer.render();
+  if (rec.active) drawRecFrame(rdt);
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
