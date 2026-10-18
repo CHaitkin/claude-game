@@ -27,6 +27,18 @@ Then go to http://localhost:8000.
 | M | Mute |
 | Enter | Start / retry |
 
+### On phones and tablets
+
+| Touch | Action |
+| --- | --- |
+| Swipe left / right | Steer (a long swipe crosses several lanes) |
+| Swipe up | Jump |
+| Swipe down | Slam back down |
+| Hold the **BOOST** button | Boost (its ring is the boost meter) |
+| Tap **II** | Pause |
+
+Menus are tapped, and a **SOUND** toggle sits in the bottom corner. It plays upright or sideways: held upright, the camera pulls back and widens so the whole tunnel stays in view. On phones the Hunter bar is hidden to keep the small screen clear; the fight reads from the scene itself (red screen edges, the red lunge strip, the gold lane and the steering arrows), and the HUNTER banner still announces it. Touch devices render sharp, at up to 2×, with the full effects; if one can't hold a smooth frame rate, the resolution steps down a notch at a time and settles. On-screen prompts follow whichever you used last, keys or touch.
+
 The main menu has **PLAY** and **CONTROLS** (↑ ↓ and Enter, or click). The controls also appear on screen for the first 10 seconds of every run, and the first time roadblocks come at you in a run, a tip at the top shows the jump keys (once per run; continuing after a crash doesn't repeat it). The pause menu offers **RESUME**, **RESTART** and **MAIN MENU**.
 
 ## How it plays
